@@ -1,5 +1,7 @@
 # p2p-chat-app
 
+A simple p2p chat app using [peerjs](https://peerjs.com/).
+
 To install dependencies:
 
 ```bash
@@ -9,6 +11,7 @@ To start peerjs server:
 
 ```bash
 bunx peerjs --port 443 --key peerjs --path /p2p-chat-app
+```
 
 To run:
 
