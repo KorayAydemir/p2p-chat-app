@@ -10,12 +10,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express()
 const server = http.createServer(app)
 
-const peerServer = ExpressPeerServer(server, {
-    proxied: true,
-    path: Config.APP_PATH 
-})
-
-app.use(peerServer)
+//const peerServer = ExpressPeerServer(server, {
+//    proxied: true,
+//    path: Config.APP_PATH 
+//})
+//
+//app.use(peerServer)
 
 app.use(express.static(path.join(__dirname, '..', '..')))
 
