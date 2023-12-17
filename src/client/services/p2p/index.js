@@ -19,36 +19,34 @@ class PeerToPeer {
         this.code = code;
         this.conn = this.peer.connect(code);
 
-        return (onConnectedCb) => this.conn.on("open", () => {
-            onConnectedCb();
+        return (onConnectedCb) =>
+            this.conn.on("open", () => {
+                onConnectedCb();
 
-            this.conn.on("data", (data) => {
-                console.log("Received", data);
+                this.listenIncomingMessages();
             });
-        });
     }
 
     onIncomingConnection() {
-        return ({answerConnection, onConnected}) => this.peer.on("connection", (c) => {
-            this.conn = c;
-            console.log("New incoming connection : ", this.conn.peer);
+        return ({ answerConnection, onConnected }) =>
+            this.peer.on("connection", (c) => {
+                this.conn = c;
+                console.log("New incoming connection : ", this.conn.peer);
 
-            const { shouldConnect } = answerConnection()
+                const { shouldConnect } = answerConnection();
 
-            if (shouldConnect){
-                this.openConnection();
-                onConnected();
-            } else {
-                this.closeConnection();
-            }
-        });
+                if (shouldConnect) {
+                    this.openConnection();
+                    onConnected();
+                } else {
+                    this.closeConnection();
+                }
+            });
     }
 
     openConnection() {
         this.conn.on("open", () => {
-            this.conn.on("data", (data) => {
-                console.log("Received", data);
-            });
+            this.listenIncomingMessages();
         });
     }
 
@@ -56,11 +54,23 @@ class PeerToPeer {
         this.conn.close();
     }
 
+    listenIncomingMessages() {
+        this.conn.on("data", (data) => {
+            console.log("Received", data);
+            document.querySelector(
+                ".chat-messages",
+            ).innerHTML += `<p>${data}</p>`;
+        });
+    }
+
     sendMessage(msg) {
         console.log("sending the message: ", msg);
         // send message at sender or receiver side
         if (this.conn && this.conn.open) {
             this.conn.send(msg);
+            document.querySelector(
+                ".chat-messages",
+            ).innerHTML += `<p>${msg}</p>`;
         }
     }
 }
