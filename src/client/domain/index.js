@@ -1,14 +1,21 @@
-export function handleCall(p2pService, viewService, { code }){
-    p2pService.connectPeers(code);
-    p2pService.establishMediaConnection();
-
-    p2pService.onStream((stream) => {
-        viewService.showConnectedContent();
-        viewService.setRemoteStream(stream);
-    });
+export function joinChat(p2pService, { code }){
+    const onConnectionAcceptedCb = p2pService.connectToPeer(code);
+    return onConnectionAcceptedCb;
 }
 
-export function handleHangup(p2pService, viewService){
+export function leaveChat(p2pService){
     p2pService.closeConnection();
-    viewService.showReadyToCallContent();
 }
+
+export function sendMessage(p2pService, msg){
+    p2pService.sendMessage(msg);
+}
+
+export function setUpPeer(p2pService){
+    const onPeerReady = p2pService.createPeer();
+
+    const onIncomingConnection = p2pService.onIncomingConnection();
+
+    return { onPeerReady, onIncomingConnection };
+}
+

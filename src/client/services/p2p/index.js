@@ -1,80 +1,5 @@
-import { Config } from "../../../config.js";
-//
-//class PeerToPeer {
-//    createPeer(callback) {
-//        this.peer = new Peer(
-//            `${Math.floor(Math.random() * 2 ** 18)
-//                .toString(36)
-//                .padStart(4, "0")}`,
-//            {
-//                host: location.hostname,
-//                debug: 1,
-//                path: Config.APP_PATH,
-//            },
-//        );
-//        window.peer = this.peer;
-//
-//        this.peer.on("open", (peerId) => callback(peerId));
-//    }
-//
-//    connectPeers(code) {
-//        this.code = code;
-//        this.conn = this.peer.connect(code);
-//    }
-//
-//    establishMediaConnection() {
-//        this.call = this.peer.call(this.code, window.localStream);
-//    }
-//
-//    onStream(callback) {
-//        this.call.on("stream", (stream) => {
-//            console.log("peer", this.peer);
-//            callback(stream);
-//        });
-//    }
-//
-//    onConnection() {
-//        this.peer.on("connection", function (connection) {
-//            this.conn = connection;
-//            const peer_id = connection.peer;
-//            console.log("connected to: " + peer_id);
-//        });
-//    }
-//
-//    answerCall({
-//        onAccepted,
-//        onStreamReceived,
-//        onConnectionClosed,
-//        onDenied,
-//    }) {
-//        this.peer.on("call", (call) => {
-//            const acceptedCall = confirm("Do you want to answer?");
-//
-//            if (acceptedCall) {
-//                call.answer(window.localStream);
-//                onAccepted();
-//
-//                call.on("stream", (stream) => {
-//                    console.log("Stream Received");
-//                    onStreamReceived(stream);
-//                });
-//
-//                call.on("close", () => onConnectionClosed());
-//            } else {
-//                onDenied()
-//            }
-//        });
-//    }
-//
-//    closeConnection(){
-//        this.conn.close();
-//    }
-//}
-//
-//export const p2p = new PeerToPeer();
-
 class PeerToPeer {
-    createPeer(callback) {
+    createPeer() {
         this.peer = new Peer(
             `${Math.floor(Math.random() * 2 ** 18)
                 .toString(36)
@@ -86,41 +11,51 @@ class PeerToPeer {
             //},
         );
 
-        this.peer.on("open", (peerId) => callback(peerId));
+        return (onPeerReady) =>
+            this.peer.on("open", (peerId) => onPeerReady(peerId));
     }
 
-    onConnectionEvent() {
-        this.peer.on("connection", (c) => {
-            this.conn = c;
-            console.log("New connection : ");
-            console.log(this.conn.peer)
-            this.conn.on("open", () => {
-                // Receive messages - receiver side
-                this.conn.on("data", (data) => {
-                    console.log("Received", data);
-                });
-            });
-        });
-    }
-
-    connectPeers(code) {
+    connectToPeer(code) {
         this.code = code;
         this.conn = this.peer.connect(code);
 
+        return (onConnectedCb) => this.conn.on("open", onConnectedCb);
+    }
+
+    onIncomingConnection() {
+        return ({answerConnection, onConnected}) => this.peer.on("connection", (c) => {
+            this.conn = c;
+            console.log("New incoming connection : ", this.conn.peer);
+
+            const { shouldConnect } = answerConnection()
+
+            if (shouldConnect){
+                this.openConnection();
+                onConnected();
+            } else {
+                this.closeConnection();
+            }
+        });
+    }
+
+    openConnection() {
         this.conn.on("open", () => {
-            console.log("connected");
-            // Receive messages - sender side
+            // Receive messages - receiver side
             this.conn.on("data", (data) => {
                 console.log("Received", data);
             });
         });
     }
 
-    sendMessage() {
-        console.log("sending message");
+    closeConnection() {
+        this.conn.close();
+    }
+
+    sendMessage(msg) {
+        console.log("sending the message: ", msg);
         // send message at sender or receiver side
         if (this.conn && this.conn.open) {
-            this.conn.send("hello world");
+            this.conn.send(msg);
         }
     }
 }

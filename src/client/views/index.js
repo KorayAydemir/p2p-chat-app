@@ -1,16 +1,18 @@
-const callBtn = document.querySelector(".call-btn");
-const audioContainer = document.querySelector(".call-container");
+const joinBtn = document.querySelector(".join-btn");
+const chatContainer = document.querySelector(".chat-container");
+const sendMsgContainer = document.querySelector(".send-msg-container");
 
-export const showReadyToCallContent = (peerId) => {
+export const showReadyToConnectContent = (peerId) => {
     window.caststatus.textContent = `Your device ID is: ${peerId}`;
-    callBtn.hidden = false;
-    audioContainer.hidden = true;
+    joinBtn.hidden = false;
+    chatContainer.hidden = true;
 };
 
 export const showConnectedContent = () => {
     window.caststatus.textContent = "You're connected";
-    callBtn.hidden = true;
-    audioContainer.hidden = false;
+    joinBtn.hidden = true;
+    chatContainer.hidden = false;
+    sendMsgContainer.hidden = false;
 }
 
 export const setRemoteStream = (stream) => {
