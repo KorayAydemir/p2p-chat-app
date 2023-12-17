@@ -8,14 +8,7 @@
     <title>Lola's Web Phone!</title>
 
     <base href="/">
-    <meta property="og:title" content="Teleprompter!">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@lady_ada_king">
-    <meta name="twitter:creator" content="@lady_ada_king">
-    <meta property="og:url" content="https://teleprompter.glitch.me">
-    <meta property="og:description" content="Cast your computer to your phone or tablet to use it in a teleprompter">
     <meta name="description" content="Cast your computer to your phone or tablet to use it in a teleprompter"/>
-    <!--     <meta property="og:image" content="https://cdn.glitch.com/1695682e-08d3-41c8-a322-1e235b5782e1%2Fimage.png?v=1561449954420"> -->
 
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="src/client/pages/index.css">
@@ -27,24 +20,22 @@
 </head>
 <body>
     <div class="container">
-        <h1>Phone a friend</h1>
+        <h1>Çet App!</h1>
         <p id="caststatus" class="big">
             Connecting...
         </p>
-        <p>
-            Please use headphones!
-        </p>
-        <button class="call-btn">
-            Call
+        <button class="join-btn">
+            Join
         </button>
-        <section class="call-container" hidden>
-            <div class="audio-container">
-                <p>You're automatically muted, unmute yourself!</p>
-                <audio controls id="remoteAudio" muted="true"></audio>
-                <audio controls id="localAudio" muted="true"></audio>
-            </div>
-            <button class="hangup-btn">
+        <section class="chat-container" hidden>
+            <button class="leave-btn">
                 Hang up
+            </button>
+        </section>
+        <section class="send-msg-container" hidden>
+            <input id="msg-input" placeholder="Enter your message" aria-colcount="10">
+            <button class="send-msg-btn">
+                Send
             </button>
         </section>
     </div>
